@@ -297,20 +297,20 @@ Koina <- setRefClass(
     predict = function(input_data,
                        pred_as_df = TRUE,
                        min_intensity = 1e-5) {
-     "
+      "
       Predict using the defined model.
-      
+
       Arguments:
-      
+
       - input_data: Either a dataframe or a list of arrays. `names` must correspond to the inputs for the chosen model.
-      
+
       - pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
-      
+
       - min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
-      
-      
+
+
       Returns:
-      
+
       Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.
       "
       
@@ -346,7 +346,7 @@ Koina <- setRefClass(
         results <- c(results, list(.self$predict_batch(batch_data)))
         
         # Update progress bar
-	if (interactive())
+        if (interactive())
           setTxtProgressBar(pb, batch_number)
       }
       
@@ -395,8 +395,8 @@ Koina <- setRefClass(
         data.frame(lapply(predictions, function(array)
           as.vector(t(array))))
       df <-
-        cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
-      df <- df[df$intensities > 0.1,]
+        cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]),], df)
+      df <- df[df$intensities > 0.1, ]
       return(df)
     }
   )
