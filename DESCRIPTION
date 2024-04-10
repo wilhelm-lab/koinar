@@ -18,6 +18,7 @@ Suggests:
   BiocStyle (>= 2.26),
   knitr,
   protViz,
+  lattice,
   testthat
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a community driven endeavour to make AI models for life 
