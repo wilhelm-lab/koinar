@@ -4,41 +4,42 @@
 \name{Koina-class}
 \alias{Koina-class}
 \alias{Koina}
-\title{koina class}
+\title{Koina client class}
 \value{
 an instance of the Koina class
 }
 \description{
-koina class
+Koina client class
 }
 \section{Fields}{
 
 \describe{
-\item{\code{model_inputs}}{list TODO(Ludwig).}
-
-\item{\code{model_outputs}}{list TODO(Ludwig).}
-
-\item{\code{batch_size}}{numeric TODO(Ludwig).}
-
-\item{\code{response_dict}}{list TODO(Ludwig).}
-
-\item{\code{model_name}}{character, e.g., \code{"AlphaPept_ms2_generic"} or \code{"Prosit_2019_intensity"}.}
+\item{\code{model_name}}{character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.}
 
 \item{\code{url}}{url, default is set to \code{"koina.wilhelmlab.org:443"}.}
 
 \item{\code{ssl}}{logical.}
 
 \item{\code{disable_progress_bar}}{logical.}
-
-\item{\code{client}}{ANY.}
-
-\item{\code{type_convert}}{list TODO(Ludwig).}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{predict(input_data, pred_as_df = TRUE, min_intensity = 1e-05)}}{predict using the defined model TODO(Ludwig}
+\item{\code{predict(input_data, pred_as_df = TRUE, min_intensity = 1e-05)}}{Predict using the defined model.
+
+Arguments:
+
+- input_data: Either a dataframe or a list of arrays. `names` must correspond to the inputs for the chosen model.
+
+- pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
+
+- min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
+
+
+Returns:
+
+Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.}
 }}
 
 \examples{

@@ -1,17 +1,11 @@
 #R
 
-#' koina class
+#' Koina client class
 #'
-#' @field model_inputs list TODO(Ludwig).
-#' @field model_outputs list TODO(Ludwig).
-#' @field batch_size numeric TODO(Ludwig).
-#' @field response_dict list TODO(Ludwig).
-#' @field model_name character, e.g., \code{"AlphaPept_ms2_generic"} or \code{"Prosit_2019_intensity"}.
+#' @field model_name character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.
 #' @field url url, default is set to \code{"koina.wilhelmlab.org:443"}.
 #' @field ssl logical.
 #' @field disable_progress_bar logical.
-#' @field client ANY.
-#' @field type_convert list TODO(Ludwig).
 #' @author Ludwig Lautenbacher, 2024
 #'
 #' @seealso \url{https://koina.wilhelmlab.org/docs}
@@ -303,7 +297,23 @@ Koina <- setRefClass(
     predict = function(input_data,
                        pred_as_df = TRUE,
                        min_intensity = 1e-5) {
-      "predict using the defined model TODO(Ludwig"
+     "
+      Predict using the defined model.
+      
+      Arguments:
+      
+      - input_data: Either a dataframe or a list of arrays. `names` must correspond to the inputs for the chosen model.
+      
+      - pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
+      
+      - min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
+      
+      
+      Returns:
+      
+      Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.
+      "
+      
       # Check if input_data is a dataframe and convert to a list of 1d arrays if true
       if (is.data.frame(input_data)) {
         # Converting each column of the dataframe into a separate 2d column array and store in a list
