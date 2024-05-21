@@ -19,7 +19,8 @@ Suggests:
   knitr,
   protViz,
   lattice,
-  testthat
+  testthat,
+  OrgMassSpecR
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a community driven endeavour to make AI models for life 
   science research more accessible. It is a service that tries to reduce the 

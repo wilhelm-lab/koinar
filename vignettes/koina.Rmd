@@ -143,6 +143,31 @@ lattice::xyplot(intensities ~ mz | model * peptide_sequences ,
                 type = 'h')
 ```
 
+## Example 3: Spectrum similarity plot with OrgMassSpecR
+```{r mssimplot, out.width="100%", fig.cap="Spectral similarity ms2pip vs prosit plot created with OrgMassSpecR"}
+library(OrgMassSpecR)
+
+input <- data.frame(
+  peptide_sequences = c("LGGNEQVTR"),
+  collision_energies = c(25),
+  precursor_charges = c(2)
+)
+
+prosit2019 <- koinar::Koina$new("Prosit_2019_intensity")
+ms2pip <- koinar::Koina$new("ms2pip_2021_HCD")
+
+pred_prosit <- prosit2019$predict(input)
+pred_ms2pip <- ms2pip$predict(input)
+
+sim <- SpectrumSimilarity(pred_prosit[,c("mz", "intensities")],
+                          pred_ms2pip[,c("mz", "intensities")],
+                          top.lab = "Prosit",
+                          bottom.lab = "MS2PIP",
+                          b = 25)
+title(main = paste("Spectrum similarity", round(sim, 3)))
+```
+
+
 
 # Install
 ```{r, eval=FALSE}
