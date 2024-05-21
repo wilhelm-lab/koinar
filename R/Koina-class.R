@@ -222,7 +222,7 @@ Koina <- setRefClass(
                "/infer")
       
       # Prepare the inputs
-      inputs <- lapply(names(input_data), function(name) {
+      inputs <- lapply(names(.self$model_inputs), function(name) {
         data_list <- input_data[[name]]
         list(
           name = name,
