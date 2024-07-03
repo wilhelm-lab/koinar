@@ -16,11 +16,14 @@ Imports:
   utils
 Suggests:
   BiocStyle (>= 2.26),
+  BiocManager,
   knitr,
   protViz,
   lattice,
   testthat,
-  OrgMassSpecR
+  OrgMassSpecR,
+  msdata,
+  Spectrum
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a community driven endeavour to make AI models for life 
   science research more accessible. It is a service that tries to reduce the 
@@ -33,6 +36,6 @@ URL: https://github.com/wilhelm-lab/koina
 BugReports: https://github.com/wilhelm-lab/koina/issues
 Encoding: UTF-8
 NeedsCompilation: no
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 biocViews: MassSpectrometry, Proteomics, Infrastructure, Software, ShinyApps
