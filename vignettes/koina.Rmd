@@ -167,7 +167,70 @@ sim <- SpectrumSimilarity(pred_prosit[,c("mz", "intensities")],
 title(main = paste("Spectrum similarity", round(sim, 3)))
 ```
 
+## Example 4: Loading rawdata with the Spectra package
+```{r}
+library(Spectra)
+library(msdata)
+library(OrgMassSpecR)
 
+# Provide the paths of rawfiles you wish to load.
+# In this example we use data provided by the msdata package
+fls <- c(
+  system.file("proteomics", 
+              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz", 
+              package = "msdata")
+  )
+
+# Load rawdata using the Spectra package
+data <- Spectra(fls, source = MsBackendMzR())
+# Filter rawdata for MS2 spectra only
+data = filterMsLevel(data, msLevel = 2)
+```
+
+```{r}
+# Extract metadata
+metadata = spectraData(data)
+
+# Extract spectra data
+spectra = peaksData(data)
+```
+
+```{r}
+# Sort data by precursor mass since mascot-queries are sorted by mass
+metadata$mass = (metadata$precursorMz*metadata$precursorCharge)
+peptide_mass_order = order(metadata$mass)
+metadata = metadata[peptide_mass_order,]
+sorted_spectra = spectra[peptide_mass_order]
+```
+
+```{r}
+# Fetch prediction using KoinaR package
+# The identifications for this data can be found at
+# https://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat
+# For this example we picked a random spectrum 4128
+# Searching for q4128 at the above website we find the sequence 
+# [UNIMOD:737]-AAVEEGVVAGGGVALIR
+input <- data.frame(
+  peptide_sequences = c("[UNIMOD:737]-AAVEEGVVAGGGVALIR"),
+  collision_energies = c(45),
+  precursor_charges = c(3),
+  fragmentation_types = c("HCD")
+)
+prosit2019 <- koinar::Koina$new("Prosit_2020_intensity_TMT")
+pred_prosit <- prosit2019$predict(input)
+```
+
+```{r}
+# Plot spectral similarity between the experimental and predicted spectrum
+# We can observe high agreement between the experimental and predicted spectrum.
+# Validating this identification from Mascot.
+sim <- SpectrumSimilarity(sorted_spectra[[4128]],
+                          pred_prosit[,c("mz", "intensities")],
+                          top.lab = "Experimental",
+                          bottom.lab = "Prosit",
+                          t=0.01)
+title(main = paste("Spectrum similarity", round(sim, 3)))
+```
 
 # Install
 ```{r, eval=FALSE}
