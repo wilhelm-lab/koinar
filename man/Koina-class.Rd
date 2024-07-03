@@ -26,20 +26,21 @@ Koina client class
 \section{Methods}{
 
 \describe{
-\item{\code{predict(input_data, pred_as_df = TRUE, min_intensity = 1e-05)}}{Predict using the defined model.
+\item{\code{predict(input_data, pred_as_df = TRUE, min_intensity = 1e-05)}}{      Predict using the defined model.
 
-Arguments:
+      Arguments:
 
-- input_data: Either a dataframe or a list of arrays. `names` must correspond to the inputs for the chosen model.
+      - input_data: Either a dataframe or a list of arrays. `names` must correspond to the inputs for the chosen model.
 
-- pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
+      - pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
 
-- min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
+      - min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
 
 
-Returns:
+      Returns:
 
-Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.}
+      Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.
+      }
 }}
 
 \examples{
