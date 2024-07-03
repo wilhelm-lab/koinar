@@ -396,7 +396,7 @@ Koina <- setRefClass(
           as.vector(t(array))))
       df <-
         cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]),], df)
-      df <- df[df$intensities > 0.1, ]
+      df <- df[df$intensities > min_intensity, ]
       return(df)
     }
   )
