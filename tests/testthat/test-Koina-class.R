@@ -140,7 +140,7 @@ test_that("Check dataframe output", {
   large_input_data = lapply(input_data, bloat_array, 1234)
   
   df_input = data.frame(large_input_data)
-  predictions = koina_instance$predict(df_input)
+  predictions = koina_instance$predict(df_input, min_intensity=0.1)
   
   expect_equal(nrow(predictions), 19 * 1234)
 })
