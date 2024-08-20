@@ -106,7 +106,7 @@ test_that("Check batching", {
   expect_equal(dim(predictions[["intensities"]]), c(1234, 174))
 })
 
-test_that("Check dataframe input", {
+test_that("Check data.frame input", {
   koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
@@ -124,6 +124,30 @@ test_that("Check dataframe input", {
   pred_arr = koina_instance$predict(large_input_data, pred_as_df = FALSE)
   
   expect_equal(pred_df[["intensities"]], pred_arr[["intensities"]], 1e-5)
+})
+
+test_that("Check DataFrame input", {
+  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+                                      server_url = "koina.wilhelmlab.org:443",
+                                      ssl = TRUE)
+  
+  input_data <- list(
+    peptide_sequences = array(c("LKEATIQLDELNQK"),
+                              dim = c(1, 1)),
+    collision_energies = array(c(25), dim = c(1, 1)),
+    precursor_charges = array(c(1), dim = c(1, 1))
+  )
+  large_input_data = lapply(input_data, bloat_array, 1234)
+  
+  DataFrame_input = S4Vectors::DataFrame(large_input_data)
+  colnames(DataFrame_input) = sapply(strsplit(colnames(DataFrame_input), ".", fixed=TRUE), function(x){x[1]}) # Fix columnnames
+  
+  df_input = data.frame(large_input_data)
+  
+  pred_d.f = koina_instance$predict(df_input, pred_as_df = FALSE)
+  pred_DF = koina_instance$predict(DataFrame_input, pred_as_df = FALSE)
+  
+  expect_equal(pred_d.f[["intensities"]], pred_DF[["intensities"]], 1e-5)
 })
 
 test_that("Check dataframe output", {
