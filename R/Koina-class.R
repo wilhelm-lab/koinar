@@ -337,10 +337,9 @@ Koina <- setRefClass(
       
       results <- list()
       
-      for (batch_number in seq_len(num_batches)) {
+      results <- lapply(seq_len(num_batches), function(batch_number) {
         start_idx <- (batch_number - 1) * .self$batch_size + 1
-        end_idx <-
-          min(batch_number * .self$batch_size, total_samples)
+        end_idx <- min(batch_number * .self$batch_size, total_samples)
         
         # Preparing batch_data
         batch_data <- lapply(input_data, function(arr) {
@@ -348,13 +347,15 @@ Koina <- setRefClass(
           arr[start_idx:end_idx, , drop = FALSE]
         })
         
-        results <- c(results, list(.self$predict_batch(batch_data)))
+        result <- .self$predict_batch(batch_data)
         
         # Update progress bar
         if (interactive())
           setTxtProgressBar(pb, batch_number)
-      }
-      
+        
+        result
+      })
+
       if (interactive())
         close(pb)
       
@@ -373,24 +374,24 @@ Koina <- setRefClass(
       reference_names <- names(list_of_list_of_arrays[[1]])
       
       # Loop over each name to aggregate across batches
-      for (name in reference_names) {
+      aggregated_results <- lapply(reference_names, function(name) {
         # Extract elements for the current name from all batches
-        elements <-
-          lapply(list_of_list_of_arrays, function(batch)
-            batch[[name]])
+        elements <- lapply(list_of_list_of_arrays, function(batch) batch[[name]])
         
         # Determine whether elements are vectors or matrices
         if (is.matrix(elements[[1]])) {
           # Use rbind to concatenate matrices along the first axis
-          aggregated_results[[name]] <- do.call(rbind, elements)
+          do.call(rbind, elements)
         } else {
           # For vectors, concatenate directly and preserve as a matrix for consistency
           concatenated_vector <- do.call(c, elements)
           # Convert to a column matrix, assuming vectors are considered as 1-column matrices
-          aggregated_results[[name]] <-
-            matrix(concatenated_vector, ncol = 1)
+          matrix(concatenated_vector, ncol = 1)
         }
-      }
+      })
+      
+      # Set names for the aggregated results
+      names(aggregated_results) <- reference_names
       return(aggregated_results)
     },
     format_predictions = function(predictions, input_df, min_intensity =
