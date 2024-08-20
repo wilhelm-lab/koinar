@@ -320,7 +320,7 @@ Koina <- setRefClass(
       "
       
       # Check if input_data is a dataframe and convert to a list of 1d arrays if true
-      if (is.data.frame(input_data)) {
+      if (is.data.frame(input_data) | class(input_data)[1] == "DFrame") {
         # Converting each column of the dataframe into a separate 2d column array and store in a list
         input_data <- lapply(input_data, function(column) {
           # Convert to matrix with a single column (n x 1)
