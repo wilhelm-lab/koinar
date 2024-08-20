@@ -76,6 +76,11 @@ Koina <- setRefClass(
       .self$get_outputs()
       .self$get_batchsize()
     },
+    show = function(){
+      cat("Koina Model class:\n")
+      cat("\tModel name:\t", .self$model_name, "\n")
+      cat("\tServer URL:\t", .self$url, "\n")
+    },
     is_server_ready = function() {
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
