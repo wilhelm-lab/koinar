@@ -1,5 +1,5 @@
 ---
-title: "Using R lang client for koina"
+title: "Using R client for Koina"
 author:
 - name: Ludwig Lautenbacher
   affiliation:
@@ -24,19 +24,39 @@ vignette: >
 urlcolor: blue
 ---
 
-```{r style, results = 'asis'}
+```{r style, results = 'asis', message=FALSE}
 BiocStyle::markdown()
 knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error=FALSE, eval=TRUE)
 ```
 
 # Introduction
-Koina is a community driven endeavor to make AI models for life science research accessible. It is a service that tries to reduce the barrier of entry for using machine learning models in life science research by removing the need to set up and maintain the infrastructure required to run the models. The project is open-source and adheres to FAIR principles.
+Koina is a repository of machine learning models enabling the remote execution of models. Predictions are generated as a response to HTTP/S requests, the standard protocol used for nearly all web traffic. As such, HTTP/S requests can be easily generated in any programming language without requiring specialized hardware. This design enables users to easily access ML/DL models that would normally required specialized hardware from any device. It also means that the hardware is used more efficiently and it allows for easy horizontal scaling depending on the demand of the user base.
 
-Here we take a look at KoinaR the R package to simplify interfacing with Koina. 
+To minimize the barrier of entry and “democratize” access to ML models, we provide a public network of Koina instances at koina.wilhelmlab.org. The computational workload is automatically distributed to processing nodes hosted at different research institutions and spin-offs across Europe. Each processing node provides computational resources to the service network, always aiming at just-in-time results delivery.
 
-## Basic usage
+In the spirit of open and collaborative science, we envision that this public Koina-Network can be scaled to meet the community’s needs by various research groups or institutions dedicating hardware. This can also vastly improve latency if servers are available geographically nearby. Alternatively, if data security is a concern, private instances within a local network can be easily deployed using the provided docker image.
 
-```{r create, eval=TRUE}
+Koina is a community driven project. It is fuly open-source. We welcome all contributions and feedback! Feel free to reach out to us or open an issue on our GitHub repository.
+
+At the moment Koina mostly focuses on the Proteomics domain but the design can be easily extended to any machine learning model. If you are interested in using Koina to interface with a machine learning model not currently available feel free to [create a request](https://github.com/wilhelm-lab/koina/issues).
+
+Here we take a look at KoinaR the R package to simplify getting predictions from Koina. 
+
+# Install
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("koinar")
+```
+
+
+# Basic usage
+Here we show the basic usage principles of KoinaR. The first step to interact with Koina is to pick a model and server you wish to use.
+Here we use the model Prosit_2019_intensity published by Gessulat et al [@prosit2019] and the public Koina network available via koina.wilhelmlab.org.
+For a complete overview of models available on Koina have a look at the documentation available at https://koina.wilhelmlab.org/docs. 
+
+```{r create, eval=TRUE, message=FALSE}
 # Create a client tied to a specific server & model
 # Here we use the model published by Gessulat et al [@prosit2019]
 # And the public server available at koina.wilhelmlab.org
@@ -48,9 +68,10 @@ prosit2019 <- koinar::Koina$new(
 prosit2019
 ```
 
+After you created the model you need to prepare your inputs. Here we prepare a simple data.frame with three different inputs 
+`peptide_sequences`, `collision_energies`, and `precursor_charges`.
 
-
-```{r input}
+```{r input, message=FALSE}
 # Create example inputs
 # Here we look at two different peptide sequences with charge 1 and 2 respectively
 input <- data.frame(
@@ -58,7 +79,10 @@ input <- data.frame(
   collision_energies = c(25, 25),
   precursor_charges = c(1, 2)
 )
+```
 
+After preparing the input you can start predicting by calling `prosit2019$predict(input)`.
+```{r}
 # Fetch the predictions by calling `$predict` of the model you want to use
 # A progress bar shows you how much of the predictions are already done
 # In this case this should complete instantly
@@ -73,23 +97,38 @@ head(prediction_results)
 ```
 
 
-## Example 1: Reproducing Fig.1d from [@prosit2019]
+# Example 1: Reproducing Fig.1d from [@prosit2019]
+One common use case for most of the models available through Koina is the prediction
+of peptide properties to improve peptide identification rates in proteomics experiments.
+One of the properties that is most beneficial in this context is the peptide fragment intensity pattern. 
 
-```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
+In this example we have a look at the model published by Gessulat et al [@prosit2019] and attempt to reproduce a figure 1d published in the manuscript.
+In this Figure the authors exemplify the prediction accuracy of their model by comparing the experimentally aquired mass spectra with the predictions of their model.
+
+```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7", message=FALSE}
   knitr::include_graphics("https://user-images.githubusercontent.com/4901987/237583247-a948ceb3-b525-4c30-b701-218346a30cf6.jpg")
 ```
 
-```{r Fig2, out.width="100%", fig.cap="LKEATIQLDELNQK CE35 3+; Reproducing Fig1", fig.height=8, fig.retina=3}
-prosit2019
+We prepare the inputs for the model, all of them can be found in the header of the figure.
 
-## Use the peptide_sequence collision_energy and
-## precursor_charge as in the figure
+```{r Fig2, out.width="100%", fig.cap="LKEATIQLDELNQK CE35 3+; Reproducing Fig1", fig.height=8, fig.retina=3, message=FALSE}
 input <- data.frame(
  peptide_sequences = c("LKEATIQLDELNQK"),
  collision_energies = c(35),
  precursor_charges = c(3)
 )
+```
 
+We reuse the model instance (`prosit2019`) created in the previous chapter. 
+To fetch the predictions we call the `predict` method of the model instance.
+```{r}
+prediction_results <- prosit2019$predict(input)
+```
+
+
+Here we create a simple mass spectrum to visually compare against Figure 1d of Gessulat et al [@prosit2019].
+We can see that the predicted spectrum we just generated is identical to the predicted spectrum shown in the publication. 
+```{r}
 prediction_results <- prosit2019$predict(input)
 
 # Plot the spectrum
@@ -107,137 +146,123 @@ text(prediction_results$mz, prediction_results$intensities,
 
 ```
 
-## Example 2: Biognosys iRT fragment ions prediction
+ Example 2: Compare spectral similarity between models
 
-```{r defineBiognosysIrtPeptides}
-iRTpeptides <- c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
+Fragment ion prediction models can have major difference in the predictions they generate.
+Impacting the peptide identification performance. We show this here by predicitng the Biognosys iRT peptides, 
+a commonly used set of synthetic spike in reference peptides, with the Prosit_intensity_2019 and the ms2pip_2021HCD models. 
+
+We follow the sampe steps as before.(1) Prepare the input.
+
+```{r defineBiognosysIrtPeptides, message=FALSE}
+input <- data.frame(
+ peptide_sequences = c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
                  "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
                  "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
-                 "LFLQFGAQGSPFLK")
-
-input <- data.frame(
- peptide_sequences = iRTpeptides,
+                 "LFLQFGAQGSPFLK"),
  collision_energies = 35,
  precursor_charges = 2
 )
 ```
 
-```{r AlphaPept}
-prosit2019$predict((input)) -> rv.prosit2019
-rv.prosit2019$model <- "Prosit_2019_intensity"
+(2) Predict
 
-AlphaPept <- koinar::Koina$new(
-  model_name = "AlphaPept_ms2_generic",
+```{r AlphaPept, message=FALSE}
+pred_prosit <- prosit2019$predict((input))
+pred_prosit$model <- "Prosit_2019_intensity"
+
+ms2pip <- koinar::Koina$new(
+  model_name = "ms2pip_HCD2021",
   server_url = "koina.wilhelmlab.org:443"
 )
-input$instrument_types = "QE"
-AlphaPept$predict(input) -> rv.AlphaPept
-rv.AlphaPept$model <- "AlphaPept_ms2_generic"
+
+pred_ms2pip <- ms2pip$predict(input)
+pred_ms2pip$model <- "ms2pip_HCD2021"
 ```
 
-```{r xyplot, out.width="100%", fig.cap="iRT peptides fragment ins prediction using  AlphaPept and Prosit2019", fig.height=15, fig.retina=3}
+After generating the plots for all iRT peptides we can observe that the predicted mass spectra are quite different.
+Which model is better depends on the data set that is being analyzed.
+
+```{r xyplot, out.width="100%", fig.cap="iRT peptides fragment ions prediction using  AlphaPept and Prosit_intensity_2019", fig.height=15, fig.retina=3}
 lattice::xyplot(intensities ~ mz | model * peptide_sequences ,
                 group = grepl('y', annotation),
-                data = rbind(rv.AlphaPept[,names(rv.prosit2019)],
-                             rv.prosit2019),
+                data = rbind(pred_prosit[,names(pred_ms2pip)],
+                             pred_ms2pip),
                 type = 'h')
 ```
 
-## Example 3: Spectrum similarity plot with OrgMassSpecR
-```{r mssimplot, out.width="100%", fig.cap="Spectral similarity ms2pip vs prosit plot created with OrgMassSpecR"}
-library(OrgMassSpecR)
+We can also use the `OrgMassSpecR` package to generate a mirror spectrum using the `SpectrumSimilarity` function.
+This not only provides a better visualization to compare spectra but also calculates a similarity score.
 
-input <- data.frame(
-  peptide_sequences = c("LGGNEQVTR"),
-  collision_energies = c(25),
-  precursor_charges = c(2)
-)
+```{r mssimplot, out.width="100%", fig.cap="Spectral similarity ms2pip vs prosit plot created with OrgMassSpecR", message=FALSE}
+peptide_sequence = "ADVTPADFSEWSK"
 
-prosit2019 <- koinar::Koina$new("Prosit_2019_intensity")
-ms2pip <- koinar::Koina$new("ms2pip_2021_HCD")
-
-pred_prosit <- prosit2019$predict(input)
-pred_ms2pip <- ms2pip$predict(input)
-
-sim <- SpectrumSimilarity(pred_prosit[,c("mz", "intensities")],
-                          pred_ms2pip[,c("mz", "intensities")],
+sim <- OrgMassSpecR::SpectrumSimilarity(pred_prosit[pred_prosit$peptide_sequences == peptide_sequence,c("mz", "intensities")],
+                          pred_ms2pip[pred_ms2pip$peptide_sequences == peptide_sequence,c("mz", "intensities")],
                           top.lab = "Prosit",
                           bottom.lab = "MS2PIP",
                           b = 25)
-title(main = paste("Spectrum similarity", round(sim, 3)))
+title(main = paste(peptide_sequence, "| Spectrum similarity", round(sim, 3)))
 ```
 
-## Example 4: Loading rawdata with the Spectra package
-```{r}
+# Example 3: Loading rawdata with the Spectra package
+
+The main application of predicted fragment mass spectra is to be compared with experimental spectra.
+Here we use the `Spectra` package to read a rawfile (provided by the `msdata` package).
+
+```{r, message=FALSE}
 library(Spectra)
 library(msdata)
-library(OrgMassSpecR)
 
-# Provide the paths of rawfiles you wish to load.
-# In this example we use data provided by the msdata package
 fls <- c(
   system.file("proteomics", 
               "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz", 
               package = "msdata")
   )
 
-# Load rawdata using the Spectra package
 data <- Spectra(fls, source = MsBackendMzR())
-# Filter rawdata for MS2 spectra only
-data = filterMsLevel(data, msLevel = 2)
+data = filterMsLevel(data, msLevel = 2) # Filter rawdata for fragmen ion spectra only
+
+metadata = spectraData(data) # Extract metadata
+spectra = peaksData(data) # Extract spectra data
 ```
 
-```{r}
-# Extract metadata
-metadata = spectraData(data)
-
-# Extract spectra data
-spectra = peaksData(data)
-```
+The data we are using was searched using Mascot to map spectra to Mascot-queries we need to sort the Spectra by precursor MZ. 
 
 ```{r}
-# Sort data by precursor mass since mascot-queries are sorted by mass
+# Sort data by precursor mass since Mascot-queries are sorted by mass
 metadata$mass = (metadata$precursorMz*metadata$precursorCharge)
 peptide_mass_order = order(metadata$mass)
 metadata = metadata[peptide_mass_order,]
 sorted_spectra = spectra[peptide_mass_order]
 ```
 
+Once we sorted the data we can find the corresponding identification in this file on [Pride](https://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat).
+To illustrate the workflow we pick the random Spectrum 4128.
+Searching for `q4128` in the Pride file gives us the `peptide_sequence` (`[UNIMOD:737]-AAVEEGVVAGGGVALIR`) and `precursor_charge` (`3`) Mascot identified.
+To validate the identification we fetch predictions from Koina using the `Prosit_2020_intensity_TMT` model.
+
 ```{r}
-# Fetch prediction using KoinaR package
-# The identifications for this data can be found at
-# https://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat
-# For this example we picked a random spectrum 4128
-# Searching for q4128 at the above website we find the sequence 
-# [UNIMOD:737]-AAVEEGVVAGGGVALIR
 input <- data.frame(
   peptide_sequences = c("[UNIMOD:737]-AAVEEGVVAGGGVALIR"),
   collision_energies = c(45),
   precursor_charges = c(3),
   fragmentation_types = c("HCD")
 )
-prosit2019 <- koinar::Koina$new("Prosit_2020_intensity_TMT")
-pred_prosit <- prosit2019$predict(input)
+prosit <- koinar::Koina$new("Prosit_2020_intensity_TMT")
+pred_prosit <- prosit$predict(input)
 ```
 
+We use `SpectrumSimilarity` from `OrgMassSpecR` to visualize the spectrum and get a similarity score to the prediction.
+We can observe high agreement between the experimental and predicted spectrum. Validating this identification.
+
 ```{r}
-# Plot spectral similarity between the experimental and predicted spectrum
-# We can observe high agreement between the experimental and predicted spectrum.
-# Validating this identification from Mascot.
-sim <- SpectrumSimilarity(sorted_spectra[[4128]],
+sim <- OrgMassSpecR::SpectrumSimilarity(sorted_spectra[[4128]],
                           pred_prosit[,c("mz", "intensities")],
                           top.lab = "Experimental",
                           bottom.lab = "Prosit",
                           t=0.01)
 title(main = paste("Spectrum similarity", round(sim, 3)))
-```
-
-# Install
-```{r, eval=FALSE}
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("koinar")
 ```
 
 # References {-}
