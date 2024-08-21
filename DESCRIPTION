@@ -1,8 +1,7 @@
 Package: koinar
 Type: Package
-Title: koina - Community driven open-source service facilitating access to
-  machine learning models for life science research  
-Version: 0.99.4
+Title: KoinaR - Remote machine learning inference using Koina  
+Version: 0.99.5
 Authors@R: c(person(given = "Ludwig", family = "Lautenbacher",
     email = "ludwig.lautenbacher@tum.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-1540-5911")),
   person(given = "Christian", family = "Panse", email = "cp@fgcz.ethz.ch", role = c("aut"),
@@ -25,12 +24,9 @@ Suggests:
   msdata,
   Spectrum
 Description: A client to simplify fetching predictions from the Koina web 
-  service. Koina is a community driven endeavour to make AI models for life 
-  science research more accessible. It is a service that tries to reduce the 
-  barrier of entry for using machine learning models in life science research 
-  by removing the need to set up and maintain the infrastructure required to 
-  run ML models. The project is open-source and adheres to FAIR principles.
-  More information can be found at https://koina.wilhelmlab.org/docs. 
+  service. Koina is a model repository enabling the remote execution of models. 
+  Predictions are generated as a response to HTTP/S requests, the standard protocol 
+  used for nearly all web traffic.
 License: Apache License 2.0
 URL: https://github.com/wilhelm-lab/koina
 BugReports: https://github.com/wilhelm-lab/koina/issues
@@ -38,4 +34,4 @@ Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-biocViews: MassSpectrometry, Proteomics, Infrastructure, Software, ShinyApps
+biocViews: MassSpectrometry, Proteomics, Infrastructure, Software
