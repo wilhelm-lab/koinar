@@ -26,7 +26,7 @@ urlcolor: blue
 
 ```{r style, results = 'asis', message=FALSE}
 BiocStyle::markdown()
-knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error=FALSE, eval=TRUE)
+knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error = FALSE, eval = TRUE)
 ```
 
 # Introduction
@@ -44,8 +44,9 @@ Here we take a look at KoinaR the R package to simplify getting predictions from
 
 # Install
 ```{r, eval=FALSE}
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
 
 BiocManager::install("koinar")
 ```
@@ -90,8 +91,8 @@ prediction_results <- prosit2019$predict(input)
 
 # Display the predictions
 # The output varies depending on the chosen model
-# For the intenstiy model we get a data.frame with 5 columns 
-# The three inputs we provided: peptide_sequences, collision_energies, precursor_charges 
+# For the intenstiy model we get a data.frame with 5 columns
+# The three inputs we provided: peptide_sequences, collision_energies, precursor_charges
 # and for each predicted fragment ion: annotation, mz, intensities
 head(prediction_results)
 ```
@@ -110,16 +111,16 @@ In this example we have a look at the model published by Gessulat et al [@prosit
 In this Figure the authors exemplify the prediction accuracy of their model by comparing the experimentally aquired mass spectra with the predictions of their model.
 
 ```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7", message=FALSE}
-  knitr::include_graphics("https://user-images.githubusercontent.com/4901987/237583247-a948ceb3-b525-4c30-b701-218346a30cf6.jpg")
+knitr::include_graphics("https://user-images.githubusercontent.com/4901987/237583247-a948ceb3-b525-4c30-b701-218346a30cf6.jpg")
 ```
 
 We prepare the inputs for the model, all of them can be found in the header of the figure.
 
 ```{r Fig2, out.width="100%", fig.cap="LKEATIQLDELNQK CE35 3+; Reproducing Fig1", fig.height=8, fig.retina=3, message=FALSE}
 input <- data.frame(
- peptide_sequences = c("LKEATIQLDELNQK"),
- collision_energies = c(35),
- precursor_charges = c(3)
+  peptide_sequences = c("LKEATIQLDELNQK"),
+  collision_energies = c(35),
+  precursor_charges = c(3)
 )
 ```
 
@@ -136,18 +137,22 @@ We can see that the predicted spectrum we just generated is identical to the pre
 prediction_results <- prosit2019$predict(input)
 
 # Plot the spectrum
-plot(prediction_results$intensities ~ prediction_results$mz, type = 'n',
-     ylim = c(0, 1.1))
+plot(prediction_results$intensities ~ prediction_results$mz,
+  type = "n",
+  ylim = c(0, 1.1)
+)
 yIdx <- grepl("y", prediction_results$annotation)
 points(prediction_results$mz[yIdx], prediction_results$intensities[yIdx],
-       col = "red", type = 'h', lwd = 2)
+  col = "red", type = "h", lwd = 2
+)
 points(prediction_results$mz[!yIdx], prediction_results$intensities[!yIdx],
-       col = "blue", type = 'h', lwd = 2)
+  col = "blue", type = "h", lwd = 2
+)
 
 text(prediction_results$mz, prediction_results$intensities,
-     labels = prediction_results$annotation,
-     las = 2, cex = 1, pos =3)
-
+  labels = prediction_results$annotation,
+  las = 2, cex = 1, pos = 3
+)
 ```
 
  Example 2: Compare spectral similarity between models
@@ -160,12 +165,14 @@ We follow the sampe steps as before.(1) Prepare the input.
 
 ```{r defineBiognosysIrtPeptides, message=FALSE}
 input <- data.frame(
- peptide_sequences = c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
-                 "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
-                 "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
-                 "LFLQFGAQGSPFLK"),
- collision_energies = 35,
- precursor_charges = 2
+  peptide_sequences = c(
+    "LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
+    "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
+    "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
+    "LFLQFGAQGSPFLK"
+  ),
+  collision_energies = 35,
+  precursor_charges = 2
 )
 ```
 
@@ -188,24 +195,28 @@ After generating the plots for all iRT peptides we can observe that the predicte
 Which model is better depends on the data set that is being analyzed.
 
 ```{r xyplot, out.width="100%", fig.cap="iRT peptides fragment ions prediction using  AlphaPept and Prosit_intensity_2019", fig.height=15, fig.retina=3}
-lattice::xyplot(intensities ~ mz | model * peptide_sequences ,
-                group = grepl('y', annotation),
-                data = rbind(pred_prosit[,names(pred_ms2pip)],
-                             pred_ms2pip),
-                type = 'h')
+lattice::xyplot(intensities ~ mz | model * peptide_sequences,
+  group = grepl("y", annotation),
+  data = rbind(
+    pred_prosit[, names(pred_ms2pip)],
+    pred_ms2pip
+  ),
+  type = "h"
+)
 ```
 
 We can also use the `OrgMassSpecR` package to generate a mirror spectrum using the `SpectrumSimilarity` function.
 This not only provides a better visualization to compare spectra but also calculates a similarity score.
 
 ```{r mssimplot, out.width="100%", fig.cap="Spectral similarity ms2pip vs prosit plot created with OrgMassSpecR", message=FALSE}
-peptide_sequence = "ADVTPADFSEWSK"
+peptide_sequence <- "ADVTPADFSEWSK"
 
-sim <- OrgMassSpecR::SpectrumSimilarity(pred_prosit[pred_prosit$peptide_sequences == peptide_sequence,c("mz", "intensities")],
-                          pred_ms2pip[pred_ms2pip$peptide_sequences == peptide_sequence,c("mz", "intensities")],
-                          top.lab = "Prosit",
-                          bottom.lab = "MS2PIP",
-                          b = 25)
+sim <- OrgMassSpecR::SpectrumSimilarity(pred_prosit[pred_prosit$peptide_sequences == peptide_sequence, c("mz", "intensities")],
+  pred_ms2pip[pred_ms2pip$peptide_sequences == peptide_sequence, c("mz", "intensities")],
+  top.lab = "Prosit",
+  bottom.lab = "MS2PIP",
+  b = 25
+)
 title(main = paste(peptide_sequence, "| Spectrum similarity", round(sim, 3)))
 ```
 
@@ -219,26 +230,27 @@ library(Spectra)
 library(msdata)
 
 fls <- c(
-  system.file("proteomics", 
-              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz", 
-              package = "msdata")
+  system.file("proteomics",
+    "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01-20141210.mzML.gz",
+    package = "msdata"
   )
+)
 
 data <- Spectra(fls, source = MsBackendMzR())
-data = filterMsLevel(data, msLevel = 2) # Filter rawdata for fragment ion spectra only
+data <- filterMsLevel(data, msLevel = 2) # Filter rawdata for fragment ion spectra only
 
-metadata = spectraData(data) # Extract metadata
-spectra = peaksData(data) # Extract spectra data
+metadata <- spectraData(data) # Extract metadata
+spectra <- peaksData(data) # Extract spectra data
 ```
 
 The data we are using was searched using Mascot to map spectra to Mascot-queries we need to sort the Spectra by precursor MZ. 
 
 ```{r}
 # Sort data by precursor mass since Mascot-queries are sorted by mass
-metadata$mass = (metadata$precursorMz*metadata$precursorCharge)
-peptide_mass_order = order(metadata$mass)
-metadata = metadata[peptide_mass_order,]
-sorted_spectra = spectra[peptide_mass_order]
+metadata$mass <- (metadata$precursorMz * metadata$precursorCharge)
+peptide_mass_order <- order(metadata$mass)
+metadata <- metadata[peptide_mass_order, ]
+sorted_spectra <- spectra[peptide_mass_order]
 ```
 
 Once we sorted the data we can find the corresponding identification in this file on [Pride](https://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001/F063721.dat).
@@ -262,10 +274,11 @@ We can observe high agreement between the experimental and predicted spectrum. V
 
 ```{r}
 sim <- OrgMassSpecR::SpectrumSimilarity(sorted_spectra[[4128]],
-                          pred_prosit[,c("mz", "intensities")],
-                          top.lab = "Experimental",
-                          bottom.lab = "Prosit",
-                          t=0.01)
+  pred_prosit[, c("mz", "intensities")],
+  top.lab = "Experimental",
+  bottom.lab = "Prosit",
+  t = 0.01
+)
 title(main = paste("Spectrum similarity", round(sim, 3)))
 ```
 

@@ -6,24 +6,25 @@ Authors@R: c(person(given = "Ludwig", family = "Lautenbacher",
     email = "ludwig.lautenbacher@tum.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-1540-5911")),
   person(given = "Christian", family = "Panse", email = "cp@fgcz.ethz.ch", role = c("aut"),
     comment = c(ORCID = "0000-0003-1975-3064")))
-Depends:
+Depends: 
   R (>= 4.3)
-Imports:
+Imports: 
   httr,
   jsonlite,
   methods,
   utils
-Suggests:
-  BiocStyle (>= 2.26),
+Suggests: 
   BiocManager,
+  BiocStyle (>= 2.26),
+  httptest,
   knitr,
-  protViz,
   lattice,
-  testthat,
-  OrgMassSpecR,
   msdata,
+  OrgMassSpecR,
+  protViz,
+  S4Vectors,
   Spectrum,
-  S4Vectors
+  testthat
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a model repository enabling the remote execution of models. 
   Predictions are generated as a response to HTTP/S requests, the standard protocol 

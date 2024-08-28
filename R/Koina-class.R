@@ -1,37 +1,37 @@
-#R
+# R
 
 #' Predict Results Using a Koina Model
-#' 
+#'
 #' The `predictWithKoinaModel` function leverages the `predict` method of a `Koina` class instance to obtain model predictions based on the input data provided.
-#' 
+#'
 #' @param koina_model An instance of the `Koina` class. This object encapsulates the model that will be used to make predictions.
 #' @param input A data frame or list of arrays containing the inputs required for the model:
-#' 
+#'
 #' @return The function returns the prediction results from the `koina_model` object. The structure of the output depends on the specific model used and the format expected by the underlying Koina prediction API.
-#' 
+#'
 #' @examples
 #' # Load the koinar package
 #' library(koinar)
-#' 
+#'
 #' # Create an instance of the Koina class with a specific model
 #' prosit2019 <- koinar::Koina(
 #'   model_name = "Prosit_2019_intensity",
 #'   server_url = "koina.wilhelmlab.org"
 #' )
-#' 
+#'
 #' # Prepare the input data
 #' input <- data.frame(
 #'   peptide_sequences = c("LGGNEQVTR", "GAGSSEPVTGLDAK"),
 #'   collision_energies = c(25, 25),
 #'   precursor_charges = c(1, 2)
 #' )
-#' 
+#'
 #' # Fetch the predictions by calling the predictWithKoinaModel function
 #' prediction_results <- predictWithKoinaModel(prosit2019, input)
-#' 
-#' @seealso 
+#'
+#' @seealso
 #' \url{https://koina.wilhelmlab.org}
-#' 
+#'
 #' @export
 predictWithKoinaModel <- function(koina_model, input) {
   return(koina_model$predict(input))
@@ -54,9 +54,9 @@ predictWithKoinaModel <- function(koina_model, input) {
 #' @importFrom jsonlite fromJSON
 #' @importFrom utils txtProgressBar
 #' @export Koina
-#' 
 #'
-#'@method predict Koina
+#'
+#' @method predict Koina
 #'
 #' @examples
 #' library(koinar)
@@ -73,7 +73,6 @@ predictWithKoinaModel <- function(koina_model, input) {
 #'
 #' # Fetch the predictions by calling `$predict` of the model you want to use
 #' prediction_results <- prosit2019$predict(input)
-
 Koina <- setRefClass(
   "Koina",
   fields = list(
@@ -95,11 +94,11 @@ Koina <- setRefClass(
       .self$model_inputs <- list()
       .self$model_outputs <- list()
       .self$response_dict <- list()
-      
+
       .self$model_name <- model_name
       .self$url <- server_url
       .self$ssl <- ssl
-      
+
       .self$type_convert <- list(
         FP32 = "float32",
         BYTES = "character",
@@ -107,15 +106,15 @@ Koina <- setRefClass(
         INT32 = "integer",
         INT64 = "integer"
       )
-      
+
       .self$is_server_ready()
       .self$is_model_ready()
-      
+
       .self$get_inputs()
       .self$get_outputs()
       .self$get_batchsize()
     },
-    show = function(){
+    show = function() {
       cat("Koina Model class:\n")
       cat("\tModel name:\t", .self$model_name, "\n")
       cat("\tServer URL:\t", .self$url, "\n")
@@ -128,29 +127,35 @@ Koina <- setRefClass(
       if (httr::status_code(response) == 200) {
         return(TRUE)
       } else {
-        stop("Server is not ready. Response status code: ",
-             httr::status_code(response))
+        stop(
+          "Server is not ready. Response status code: ",
+          httr::status_code(response)
+        )
       }
     },
     is_model_ready = function() {
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
-        paste0(protocol,
-               "://",
-               .self$url,
-               "/v2/models/",
-               .self$model_name,
-               "/ready")
+        paste0(
+          protocol,
+          "://",
+          .self$url,
+          "/v2/models/",
+          .self$model_name,
+          "/ready"
+        )
       response <- httr::GET(endpoint)
-      
+
       # If the status code is 200, the model is ready.
       if (httr::status_code(response) == 200) {
         return(TRUE)
       } else {
         content <- httr::content(response, "text", encoding = "UTF-8")
         if (httr::status_code(response) == 400) {
-          stop("ValueError: The specified model is not available at the server. ",
-               content)
+          stop(
+            "ValueError: The specified model is not available at the server. ",
+            content
+          )
         } else {
           stop(
             "InferenceServerException: An exception occurred while querying the server for available models. ",
@@ -163,24 +168,26 @@ Koina <- setRefClass(
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
         paste0(protocol, "://", .self$url, "/v2/models/", .self$model_name)
-      
+
       response <- httr::GET(endpoint)
-      
+
       if (httr::status_code(response) != 200) {
         stop(
           "InferenceServerException: An exception occurred while querying the server for model inputs."
         )
       }
-      
+
       content <- httr::content(response, "parsed")
-      
+
       # Retrieve inputs from the model's metadata and store them
       if (!is.null(content$inputs)) {
         .self$model_inputs <- setNames(
-          lapply(content$inputs, function(i)
-            list(shape = i$shape, datatype = i$datatype)),
-          vapply(content$inputs, function(i)
-            i$name, c(''))
+          lapply(content$inputs, function(i) {
+            list(shape = i$shape, datatype = i$datatype)
+          }),
+          vapply(content$inputs, function(i) {
+            i$name
+          }, c(""))
         )
       } else {
         stop(
@@ -192,24 +199,26 @@ Koina <- setRefClass(
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
         paste0(protocol, "://", .self$url, "/v2/models/", .self$model_name)
-      
+
       response <- httr::GET(endpoint)
-      
+
       if (httr::status_code(response) != 200) {
         stop(
           "InferenceServerException: An exception occurred while querying the server for model metadata."
         )
       }
-      
+
       content <- httr::content(response, "parsed")
-      
+
       # Extract and store outputs from the model's metadata
       if (!is.null(content$outputs)) {
         .self$model_outputs <- setNames(
-          lapply(content$outputs, function(out)
-            list(datatype = out$datatype)),
-          vapply(content$outputs, function(out)
-            out$name, c(''))
+          lapply(content$outputs, function(out) {
+            list(datatype = out$datatype)
+          }),
+          vapply(content$outputs, function(out) {
+            out$name
+          }, c(""))
         )
       } else {
         stop(
@@ -220,23 +229,25 @@ Koina <- setRefClass(
     get_batchsize = function() {
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
-        paste0(protocol,
-               "://",
-               .self$url,
-               "/v2/models/",
-               .self$model_name,
-               "/config")
-      
+        paste0(
+          protocol,
+          "://",
+          .self$url,
+          "/v2/models/",
+          .self$model_name,
+          "/config"
+        )
+
       response <- httr::GET(endpoint)
-      
+
       if (httr::status_code(response) != 200) {
         stop(
           "InferenceServerException: An exception occurred while querying the server for the max batch size."
         )
       }
-      
+
       content <- httr::content(response, "parsed")
-      
+
       if (!is.null(content$max_batch_size)) {
         .self$batch_size <- content$max_batch_size
       } else {
@@ -250,21 +261,25 @@ Koina <- setRefClass(
       required_inputs <- names(.self$model_inputs)
       missing_inputs <- setdiff(required_inputs, names(input_data))
       if (length(missing_inputs) > 0) {
-        stop("Missing input(s): ",
-             paste(missing_inputs, collapse = ", "),
-             ".")
+        stop(
+          "Missing input(s): ",
+          paste(missing_inputs, collapse = ", "),
+          "."
+        )
       }
-      
+
       # Construct the endpoint
       protocol <- ifelse(.self$ssl, "https", "http")
       endpoint <-
-        paste0(protocol,
-               "://",
-               .self$url,
-               "/v2/models/",
-               .self$model_name,
-               "/infer")
-      
+        paste0(
+          protocol,
+          "://",
+          .self$url,
+          "/v2/models/",
+          .self$model_name,
+          "/infer"
+        )
+
       # Prepare the inputs
       inputs <- lapply(names(.self$model_inputs), function(name) {
         data_list <- input_data[[name]]
@@ -277,14 +292,16 @@ Koina <- setRefClass(
           data = data_list
         )
       })
-      
+
       # Prepare the POST json payload
-      post_data <- list(id = Sys.time(),
-                        inputs = inputs)
-      
+      post_data <- list(
+        id = Sys.time(),
+        inputs = inputs
+      )
+
       # Convert the list to JSON
       json_data <- jsonlite::toJSON(post_data, auto_unbox = TRUE)
-      
+
       # Perform the POST request
       response <- httr::POST(
         url = endpoint,
@@ -293,20 +310,20 @@ Koina <- setRefClass(
         httr::add_headers(`Content-Type` = "application/json"),
         httr::timeout(60)
       )
-      
+
       # Check response and return
       if (httr::status_code(response) != 200) {
         stop("Request failed. Status code: ", httr::content(response))
       } else {
         response_json <- httr::content(response, "text", encoding = "UTF-8")
-        return (.self$convert_response_to_list(response_json))
+        return(.self$convert_response_to_list(response_json))
       }
     },
     convert_response_to_list = function(json_response) {
       # Ensure that parsed data isn't being simplified to a vector automatically
       parsed_response <-
         jsonlite::fromJSON(json_response, simplifyVector = FALSE)
-      
+
       outputs_list <- list()
       if (!is.null(parsed_response$outputs)) {
         for (output in parsed_response$outputs) {
@@ -322,20 +339,21 @@ Koina <- setRefClass(
           } else if (datatype == "INT32") {
             data <- as.integer(data)
           }
-          
+
           # Reshape the data based on provided shape TODO check if this works for higher dimensions
           if (length(output$shape) == 2) {
             data <-
               matrix(data,
-                     nrow = as.integer(output$shape[1]),
-                     byrow = TRUE)
+                nrow = as.integer(output$shape[1]),
+                byrow = TRUE
+              )
           }
           outputs_list[[name]] <- data
         }
       } else {
         stop("The 'outputs' field is missing in the parsed response.")
       }
-      
+
       return(outputs_list)
     },
     predict = function(input_data,
@@ -357,7 +375,7 @@ Koina <- setRefClass(
 
       Depending on `pred_as_df`, returns either a dataframe or a list/array of predictions, applying `min_intensity` filtering if applicable.
       "
-      
+
       # Check if input_data is a dataframe and convert to a list of 1d arrays if true
       if (is.data.frame(input_data) | is(input_data, "DFrame")) {
         # Converting each column of the dataframe into a separate 2d column array and store in a list
@@ -366,57 +384,60 @@ Koina <- setRefClass(
           array(column, dim = c(length(column), 1))
         })
       }
-      
+
       total_samples <- dim(input_data[[1]])[1]
       num_batches <- ceiling(total_samples / .self$batch_size)
-      
+
       #  Initialize progress bar
-      if (interactive())
+      if (interactive()) {
         pb <- txtProgressBar(min = 0, max = num_batches, style = 3)
-      
+      }
+
       results <- list()
-      
+
       results <- lapply(seq_len(num_batches), function(batch_number) {
         start_idx <- (batch_number - 1) * .self$batch_size + 1
         end_idx <- min(batch_number * .self$batch_size, total_samples)
-        
+
         # Preparing batch_data
         batch_data <- lapply(input_data, function(arr) {
           # For arrays, slice while preserving dimensional integrity
           arr[start_idx:end_idx, , drop = FALSE]
         })
-        
+
         result <- .self$predict_batch(batch_data)
-        
+
         # Update progress bar
-        if (interactive())
+        if (interactive()) {
           setTxtProgressBar(pb, batch_number)
-        
+        }
+
         result
       })
 
-      if (interactive())
+      if (interactive()) {
         close(pb)
-      
+      }
+
       results <- aggregate_batches(results)
-      
+
       if (pred_as_df) {
         return(format_predictions(results, data.frame(input_data), min_intensity))
-      } else{
+      } else {
         return(results)
       }
     },
     aggregate_batches = function(list_of_list_of_arrays) {
       aggregated_results <- list()
-      
+
       # Extract names from the first batch as a reference for aggregation
       reference_names <- names(list_of_list_of_arrays[[1]])
-      
+
       # Loop over each name to aggregate across batches
       aggregated_results <- lapply(reference_names, function(name) {
         # Extract elements for the current name from all batches
         elements <- lapply(list_of_list_of_arrays, function(batch) batch[[name]])
-        
+
         # Determine whether elements are vectors or matrices
         if (is.matrix(elements[[1]])) {
           # Use rbind to concatenate matrices along the first axis
@@ -428,7 +449,7 @@ Koina <- setRefClass(
           matrix(concatenated_vector, ncol = 1)
         }
       })
-      
+
       # Set names for the aggregated results
       names(aggregated_results) <- reference_names
       return(aggregated_results)
@@ -437,10 +458,11 @@ Koina <- setRefClass(
                                     1e-4) {
       # Use lapply to flatten each 2D array in the list to a 1D vector
       df <-
-        data.frame(lapply(predictions, function(array)
-          as.vector(t(array))))
+        data.frame(lapply(predictions, function(array) {
+          as.vector(t(array))
+        }))
       df <-
-        cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]),], df)
+        cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
       df <- df[df$intensities > min_intensity, ]
       return(df)
     }
