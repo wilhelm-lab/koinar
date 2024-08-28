@@ -24,7 +24,7 @@ library(koinar)
 # Create an instance of the Koina class with a specific model
 prosit2019 <- koinar::Koina(
   model_name = "Prosit_2019_intensity",
-  server_url = "koina.wilhelmlab.org:443"
+  server_url = "koina.wilhelmlab.org"
 )
 
 # Prepare the input data

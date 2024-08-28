@@ -16,7 +16,7 @@
 #' # Create an instance of the Koina class with a specific model
 #' prosit2019 <- koinar::Koina(
 #'   model_name = "Prosit_2019_intensity",
-#'   server_url = "koina.wilhelmlab.org:443"
+#'   server_url = "koina.wilhelmlab.org"
 #' )
 #' 
 #' # Prepare the input data
@@ -40,7 +40,7 @@ predictWithKoinaModel <- function(koina_model, input) {
 #' Koina client class
 #'
 #' @field model_name character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.
-#' @field url url, default is set to \code{"koina.wilhelmlab.org:"}.
+#' @field url url, default is set to \code{"koina.wilhelmlab.org"}.
 #' @field ssl logical.
 #' @field disable_progress_bar logical.
 #' @author Ludwig Lautenbacher, 2024
@@ -62,7 +62,7 @@ predictWithKoinaModel <- function(koina_model, input) {
 #' library(koinar)
 #' prosit2019 <- koinar::Koina(
 #'   model_name = "Prosit_2019_intensity",
-#'   server_url = "koina.wilhelmlab.org:443"
+#'   server_url = "koina.wilhelmlab.org"
 #' )
 #'
 #' input <- data.frame(
@@ -88,7 +88,7 @@ Koina <- setRefClass(
   ),
   methods = list(
     initialize = function(model_name,
-                          server_url = "koina.wilhelmlab.org:443",
+                          server_url = "koina.wilhelmlab.org",
                           ssl = TRUE,
                           targets = NULL,
                           disable_progress_bar = FALSE) {

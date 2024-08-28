@@ -31,7 +31,7 @@ input <- data.frame(
 
 prosit2019 <- koinar::Koina(
   model_name = "Prosit_2019_intensity",
-  server_url = "koina.wilhelmlab.org:443"
+  server_url = "koina.wilhelmlab.org"
 )
 
 prediction_results <- prosit2019$predict(input)

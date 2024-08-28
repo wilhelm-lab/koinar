@@ -17,7 +17,7 @@ test_that("check Prosit2019 Fig1", {
   ground_truth <- c(31, 13, 25, 52, 34, 43, 37, 46, 40, 58)
   
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   koina_instance_fgcz <- koinar::Koina(model_name = "Prosit_2019_intensity",
@@ -73,7 +73,7 @@ test_that("Check error: Model unavailable", {
 
 test_that("Check error: Missing input", {
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   input <- list(
@@ -89,7 +89,7 @@ test_that("Check error: Missing input", {
 
 test_that("Check batching", {
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   input_data <- list(
@@ -107,7 +107,7 @@ test_that("Check batching", {
 
 test_that("Check data.frame input", {
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   input_data <- list(
@@ -127,7 +127,7 @@ test_that("Check data.frame input", {
 
 test_that("Check DataFrame input", {
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   input_data <- list(
@@ -151,7 +151,7 @@ test_that("Check DataFrame input", {
 
 test_that("Check dataframe output", {
   koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
-                                      server_url = "koina.wilhelmlab.org:443",
+                                      server_url = "koina.wilhelmlab.org",
                                       ssl = TRUE)
   
   input_data <- list(
@@ -171,7 +171,7 @@ test_that("Check dataframe output", {
 test_that("Pass by value semantic.", {
   prosit2019<- koinar::Koina(
     model_name = "Prosit_2019_intensity",
-    server_url = "koina.wilhelmlab.org:443"
+    server_url = "koina.wilhelmlab.org"
   )
 
     input <- data.frame(

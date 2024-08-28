@@ -16,7 +16,7 @@ Koina client class
 \describe{
 \item{\code{model_name}}{character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.}
 
-\item{\code{url}}{url, default is set to \code{"koina.wilhelmlab.org:"}.}
+\item{\code{url}}{url, default is set to \code{"koina.wilhelmlab.org"}.}
 
 \item{\code{ssl}}{logical.}
 
@@ -47,7 +47,7 @@ Koina client class
 library(koinar)
 prosit2019 <- koinar::Koina(
   model_name = "Prosit_2019_intensity",
-  server_url = "koina.wilhelmlab.org:443"
+  server_url = "koina.wilhelmlab.org"
 )
 
 input <- data.frame(
