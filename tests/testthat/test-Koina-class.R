@@ -169,7 +169,7 @@ test_that("Check dataframe output", {
 })
 
 test_that("Pass by value semantic.", {
-  prosit2019<- koinar::Koina$new(
+  prosit2019<- koinar::Koina(
     model_name = "Prosit_2019_intensity",
     server_url = "koina.wilhelmlab.org:443"
   )

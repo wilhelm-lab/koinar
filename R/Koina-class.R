@@ -40,7 +40,7 @@ predictWithKoinaModel <- function(koina_model, input) {
 #' Koina client class
 #'
 #' @field model_name character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.
-#' @field url url, default is set to \code{"koina.wilhelmlab.org:443"}.
+#' @field url url, default is set to \code{"koina.wilhelmlab.org:"}.
 #' @field ssl logical.
 #' @field disable_progress_bar logical.
 #' @author Ludwig Lautenbacher, 2024

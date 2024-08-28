@@ -16,7 +16,7 @@ Koina client class
 \describe{
 \item{\code{model_name}}{character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.}
 
-\item{\code{url}}{url, default is set to \code{"koina.wilhelmlab.org:443"}.}
+\item{\code{url}}{url, default is set to \code{"koina.wilhelmlab.org:"}.}
 
 \item{\code{ssl}}{logical.}
 

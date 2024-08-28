@@ -29,7 +29,7 @@ input <- data.frame(
   precursor_charges = c(1, 2)
 )
 
-prosit2019 <- koinar::Koina$new(
+prosit2019 <- koinar::Koina(
   model_name = "Prosit_2019_intensity",
   server_url = "koina.wilhelmlab.org:443"
 )
