@@ -1,7 +1,7 @@
 Package: koinar
 Type: Package
 Title: KoinaR - Remote machine learning inference using Koina  
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: c(person(given = "Ludwig", family = "Lautenbacher",
     email = "ludwig.lautenbacher@tum.de", role = c("aut", "cre"), comment=c(ORCID="0000-0002-1540-5911")),
   person(given = "Christian", family = "Panse", email = "cp@fgcz.ethz.ch", role = c("aut"),
