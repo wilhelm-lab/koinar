@@ -45,7 +45,7 @@ Koina client class
 
 \examples{
 library(koinar)
-prosit2019 <- koinar::Koina$new(
+prosit2019 <- koinar::Koina(
   model_name = "Prosit_2019_intensity",
   server_url = "koina.wilhelmlab.org:443"
 )
@@ -60,7 +60,7 @@ input <- data.frame(
 prediction_results <- prosit2019$predict(input)
 }
 \seealso{
-\url{https://koina.wilhelmlab.org/docs}
+\url{https://koina.wilhelmlab.org}
 }
 \author{
 Ludwig Lautenbacher, 2024

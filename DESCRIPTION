@@ -22,7 +22,8 @@ Suggests:
   testthat,
   OrgMassSpecR,
   msdata,
-  Spectrum
+  Spectrum,
+  S4Vectors
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a model repository enabling the remote execution of models. 
   Predictions are generated as a response to HTTP/S requests, the standard protocol 

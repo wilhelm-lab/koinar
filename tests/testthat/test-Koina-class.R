@@ -8,7 +8,6 @@ bloat_array <- function(arr, n) {
   return(expanded_array)
 }
 
-
 test_that("check Prosit2019 Fig1", {
   ## input
   peptide <- "LKEATIQLDELNQK"
@@ -17,11 +16,11 @@ test_that("check Prosit2019 Fig1", {
   ## indices of top 10 highest intensities
   ground_truth <- c(31, 13, 25, 52, 34, 43, 37, 46, 40, 58)
   
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
-  koina_instance_fgcz <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance_fgcz <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                            server_url = "dlomix.fgcz.uzh.ch:443",
                                            ssl = TRUE)
   
@@ -59,7 +58,7 @@ test_that("check Prosit2019 Fig1", {
 
 test_that("Check error: Server unavailable", {
   expect_error(
-    koinar::Koina$new(model_name = "Prosit_2019_intensity",
+    koinar::Koina(model_name = "Prosit_2019_intensity",
                       server_url = "google.com",),
     "Server is not ready. Response status code: 404"
   )
@@ -67,13 +66,13 @@ test_that("Check error: Server unavailable", {
 
 test_that("Check error: Model unavailable", {
   expect_error(
-    koinar::Koina$new(model_name = "not_a_valid_model_name"),
+    koinar::Koina(model_name = "not_a_valid_model_name"),
     "ValueError: The specified model is not available at the server. "
   )
 })
 
 test_that("Check error: Missing input", {
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
@@ -89,7 +88,7 @@ test_that("Check error: Missing input", {
 })
 
 test_that("Check batching", {
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
@@ -107,7 +106,7 @@ test_that("Check batching", {
 })
 
 test_that("Check data.frame input", {
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
@@ -127,7 +126,7 @@ test_that("Check data.frame input", {
 })
 
 test_that("Check DataFrame input", {
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
@@ -151,7 +150,7 @@ test_that("Check DataFrame input", {
 })
 
 test_that("Check dataframe output", {
-  koina_instance <- koinar::Koina$new(model_name = "Prosit_2019_intensity",
+  koina_instance <- koinar::Koina(model_name = "Prosit_2019_intensity",
                                       server_url = "koina.wilhelmlab.org:443",
                                       ssl = TRUE)
   
@@ -167,4 +166,22 @@ test_that("Check dataframe output", {
   predictions = koina_instance$predict(df_input, min_intensity=0.1)
   
   expect_equal(nrow(predictions), 19 * 1234)
+})
+
+test_that("Pass by value semantic.", {
+  prosit2019<- koinar::Koina$new(
+    model_name = "Prosit_2019_intensity",
+    server_url = "koina.wilhelmlab.org:443"
+  )
+
+    input <- data.frame(
+    peptide_sequences = c("LGGNEQVTR", "GAGSSEPVTGLDAK"),
+    collision_energies = c(25, 25),
+    precursor_charges = c(1, 2)
+  )
+  
+  p1 <- prosit2019$predict(input)
+  p2 <- koinar::predictWithKoinaModel(prosit2019, input)
+  
+  expect_equal(p1, p2, 1e-6)
 })

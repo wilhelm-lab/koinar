@@ -1,5 +1,42 @@
 #R
 
+#' Predict Results Using a Koina Model
+#' 
+#' The `predictWithKoinaModel` function leverages the `predict` method of a `Koina` class instance to obtain model predictions based on the input data provided.
+#' 
+#' @param koina_model An instance of the `Koina` class. This object encapsulates the model that will be used to make predictions.
+#' @param input A data frame or list of arrays containing the inputs required for the model:
+#' 
+#' @return The function returns the prediction results from the `koina_model` object. The structure of the output depends on the specific model used and the format expected by the underlying Koina prediction API.
+#' 
+#' @examples
+#' # Load the koinar package
+#' library(koinar)
+#' 
+#' # Create an instance of the Koina class with a specific model
+#' prosit2019 <- koinar::Koina(
+#'   model_name = "Prosit_2019_intensity",
+#'   server_url = "koina.wilhelmlab.org:443"
+#' )
+#' 
+#' # Prepare the input data
+#' input <- data.frame(
+#'   peptide_sequences = c("LGGNEQVTR", "GAGSSEPVTGLDAK"),
+#'   collision_energies = c(25, 25),
+#'   precursor_charges = c(1, 2)
+#' )
+#' 
+#' # Fetch the predictions by calling the predictWithKoinaModel function
+#' prediction_results <- predictWithKoinaModel(prosit2019, input)
+#' 
+#' @seealso 
+#' \url{https://koina.wilhelmlab.org}
+#' 
+#' @export
+predictWithKoinaModel <- function(koina_model, input) {
+  return(koina_model$predict(input))
+}
+
 #' Koina client class
 #'
 #' @field model_name character, e.g., \code{"Prosit_2019_intensity". See https://koina.wilhelmlab.org/docs for all available models}.
@@ -8,7 +45,7 @@
 #' @field disable_progress_bar logical.
 #' @author Ludwig Lautenbacher, 2024
 #'
-#' @seealso \url{https://koina.wilhelmlab.org/docs}
+#' @seealso \url{https://koina.wilhelmlab.org}
 #'
 #' @return an instance of the Koina class
 #'
@@ -17,12 +54,13 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom utils txtProgressBar
 #' @export Koina
+#' 
 #'
 #'@method predict Koina
 #'
 #' @examples
 #' library(koinar)
-#' prosit2019 <- koinar::Koina$new(
+#' prosit2019 <- koinar::Koina(
 #'   model_name = "Prosit_2019_intensity",
 #'   server_url = "koina.wilhelmlab.org:443"
 #' )
@@ -35,6 +73,7 @@
 #'
 #' # Fetch the predictions by calling `$predict` of the model you want to use
 #' prediction_results <- prosit2019$predict(input)
+
 Koina <- setRefClass(
   "Koina",
   fields = list(
@@ -320,7 +359,7 @@ Koina <- setRefClass(
       "
       
       # Check if input_data is a dataframe and convert to a list of 1d arrays if true
-      if (is.data.frame(input_data) | class(input_data)[1] == "DFrame") {
+      if (is.data.frame(input_data) | is(input_data, "DFrame")) {
         # Converting each column of the dataframe into a separate 2d column array and store in a list
         input_data <- lapply(input_data, function(column) {
           # Convert to matrix with a single column (n x 1)
