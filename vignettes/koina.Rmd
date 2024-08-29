@@ -61,7 +61,13 @@ For a complete overview of models available on Koina have a look at the document
 # httptest is used to cached responses
 # This is important to compile the vignette in a CI pipeline
 # If you want to use this vignette interactively you can delete this line
-httptest::start_vignette("mockapi")  
+library(httptest)
+start_vignette("mockapi")
+set_requester(function(request) {
+  request <- gsub_request(request, "koina.wilhelmlab.org", "k.w.org")
+  request <- gsub_request(request, "dlomix.fgcz.uzh.ch", "d.f.u.ch")
+  request <- gsub_request(request, "Prosit_2019_intensity", "P_29_int")
+})
 
 # Create a client tied to a specific server & model
 # Here we use the model published by Gessulat et al [@prosit2019]

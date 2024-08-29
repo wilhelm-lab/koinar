@@ -157,7 +157,7 @@ with_mock_dir("mockapi_dataframe_input", {
   })
 })
 
-with_mock_dir("mockapi_DataFrame_input", {
+with_mock_dir("mockapi_s4_dataframe_input", {
   test_that("Check DataFrame input", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
