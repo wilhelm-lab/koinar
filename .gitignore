@@ -3,4 +3,4 @@
 .Rhistory
 .RData
 .Ruserdata
-tests/testthat/mockapi_batching/
+tests/testthat/mAPI_batch/

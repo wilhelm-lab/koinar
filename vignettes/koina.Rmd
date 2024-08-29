@@ -33,7 +33,7 @@ knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error = FALSE, eval = TRU
 # This is important to compile the vignette in a CI pipeline
 # If you want to use this vignette interactively you can delete this part
 library(httptest)
-start_vignette("mockapi")
+start_vignette("mAPI")
 set_requester(function(request) {
   request <- gsub_request(request, "koina.wilhelmlab.org", "k.w.org")
   request <- gsub_request(request, "dlomix.fgcz.uzh.ch", "d.f.u.ch")

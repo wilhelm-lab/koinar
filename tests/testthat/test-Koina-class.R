@@ -8,7 +8,7 @@ bloat_array <- function(arr, n) {
   return(expanded_array)
 }
 
-with_mock_dir("mockapi_fig1", {
+with_mock_dir("mAPI_fig1", {
   test_that("check Prosit2019 Fig1", {
     ## input
     peptide <- "LKEATIQLDELNQK"
@@ -65,7 +65,7 @@ with_mock_dir("mockapi_fig1", {
   })
 })
 
-with_mock_dir("mockapi_server_unavailable", {
+with_mock_dir("mAPI_wrong_url", {
   test_that("Check error: Server unavailable", {
     expect_error(
       koinar::Koina(
@@ -77,7 +77,7 @@ with_mock_dir("mockapi_server_unavailable", {
   })
 })
 
-with_mock_dir("mockapi_model_unavialable", {
+with_mock_dir("mAPI_wrong_model", {
   test_that("Check error: Model unavailable", {
     expect_error(
       koinar::Koina(model_name = "not_a_valid_model_name"),
@@ -86,7 +86,7 @@ with_mock_dir("mockapi_model_unavialable", {
   })
 })
 
-with_mock_dir("mockapi_missing_input", {
+with_mock_dir("mAPI_wrong_input", {
   test_that("Check error: Missing input", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
@@ -110,7 +110,7 @@ with_mock_dir("mockapi_missing_input", {
   })
 })
 
-with_mock_dir("mockapi_batching", {
+with_mock_dir("mAPI_batch", {
   test_that("Check batching", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
@@ -133,7 +133,7 @@ with_mock_dir("mockapi_batching", {
   })
 })
 
-with_mock_dir("mockapi_dataframe_input", {
+with_mock_dir("mAPI_df_input", {
   test_that("Check data.frame input", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
@@ -157,7 +157,7 @@ with_mock_dir("mockapi_dataframe_input", {
   })
 })
 
-with_mock_dir("mockapi_s4_dataframe_input", {
+with_mock_dir("mAPI_s4_df_input", {
   test_that("Check DataFrame input", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
@@ -187,7 +187,7 @@ with_mock_dir("mockapi_s4_dataframe_input", {
   })
 })
 
-with_mock_dir("mockapi_dataframe_output", {
+with_mock_dir("mAPI_df_output", {
   test_that("Check dataframe output", {
     koina_instance <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
@@ -210,7 +210,7 @@ with_mock_dir("mockapi_dataframe_output", {
   })
 })
 
-with_mock_dir("mockapi_predictWithKoinaModel", {
+with_mock_dir("mAPI_altPred", {
   test_that("predictWithKoinaModel", {
     prosit2019 <- koinar::Koina(
       model_name = "Prosit_2019_intensity",
