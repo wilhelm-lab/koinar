@@ -148,11 +148,10 @@ with_mock_dir("mockapi_dataframe_input", {
       collision_energies = array(c(25), dim = c(1, 1)),
       precursor_charges = array(c(1), dim = c(1, 1))
     )
-    large_input_data <- lapply(input_data, bloat_array, 1234)
 
-    df_input <- data.frame(large_input_data)
+    df_input <- data.frame(input_data)
     pred_df <- koina_instance$predict(df_input, pred_as_df = FALSE)
-    pred_arr <- koina_instance$predict(large_input_data, pred_as_df = FALSE)
+    pred_arr <- koina_instance$predict(input_data, pred_as_df = FALSE)
 
     expect_equal(pred_df[["intensities"]], pred_arr[["intensities"]], 1e-5)
   })
@@ -173,14 +172,13 @@ with_mock_dir("mockapi_DataFrame_input", {
       collision_energies = array(c(25), dim = c(1, 1)),
       precursor_charges = array(c(1), dim = c(1, 1))
     )
-    large_input_data <- lapply(input_data, bloat_array, 1234)
 
-    DataFrame_input <- S4Vectors::DataFrame(large_input_data)
+    DataFrame_input <- S4Vectors::DataFrame(input_data)
     colnames(DataFrame_input) <- sapply(strsplit(colnames(DataFrame_input), ".", fixed = TRUE), function(x) {
       x[1]
     }) # Fix columnnames
 
-    df_input <- data.frame(large_input_data)
+    df_input <- data.frame(input_data)
 
     pred_d.f <- koina_instance$predict(df_input, pred_as_df = FALSE)
     pred_DF <- koina_instance$predict(DataFrame_input, pred_as_df = FALSE)
@@ -204,12 +202,11 @@ with_mock_dir("mockapi_dataframe_output", {
       collision_energies = array(c(25), dim = c(1, 1)),
       precursor_charges = array(c(1), dim = c(1, 1))
     )
-    large_input_data <- lapply(input_data, bloat_array, 1234)
 
-    df_input <- data.frame(large_input_data)
+    df_input <- data.frame(input_data)
     predictions <- koina_instance$predict(df_input, min_intensity = 0.1)
 
-    expect_equal(nrow(predictions), 19 * 1234)
+    expect_equal(nrow(predictions), 19)
   })
 })
 

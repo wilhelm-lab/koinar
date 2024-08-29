@@ -117,8 +117,8 @@
                 "model_name": "Prosit_2019_intensity_core",
                 "model_version": 1,
                 "input_map": {
-                    "peptides_in:0": "peptides_in:0",
                     "precursor_charge_in:0": "precursor_charges_in_preprocessed:0",
+                    "peptides_in:0": "peptides_in:0",
                     "collision_energy_in:0": "norm_collision_energy"
                 },
                 "output_map": {
@@ -135,8 +135,8 @@
                     "peaks_in:0": "out/Reshape:0"
                 },
                 "output_map": {
-                    "intensities": "intensities",
-                    "mz": "mz"
+                    "mz": "mz",
+                    "intensities": "intensities"
                 },
                 "model_namespace": ""
             },
