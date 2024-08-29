@@ -1,4 +1,6 @@
+*.Rproj
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+tests/testthat/mockapi_batching/
