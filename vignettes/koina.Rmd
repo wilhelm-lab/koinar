@@ -24,9 +24,21 @@ vignette: >
 urlcolor: blue
 ---
 
-```{r style, results = 'asis', message=FALSE}
+```{r style, results = 'asis', echo=FALSE, message=FALSE}
+# Configuration of the vignette
 BiocStyle::markdown()
 knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error = FALSE, eval = TRUE)
+
+# httptest is used to cached responses
+# This is important to compile the vignette in a CI pipeline
+# If you want to use this vignette interactively you can delete this part
+library(httptest)
+start_vignette("mockapi")
+set_requester(function(request) {
+  request <- gsub_request(request, "koina.wilhelmlab.org", "k.w.org")
+  request <- gsub_request(request, "dlomix.fgcz.uzh.ch", "d.f.u.ch")
+  request <- gsub_request(request, "Prosit_2019_intensity", "P_29_int")
+})
 ```
 
 # Introduction
@@ -58,17 +70,6 @@ Here we use the model Prosit_2019_intensity published by Gessulat et al [@prosit
 For a complete overview of models available on Koina have a look at the documentation available at https://koina.wilhelmlab.org/docs. 
 
 ```{r create, eval=TRUE, message=FALSE}
-# httptest is used to cached responses
-# This is important to compile the vignette in a CI pipeline
-# If you want to use this vignette interactively you can delete this line
-library(httptest)
-start_vignette("mockapi")
-set_requester(function(request) {
-  request <- gsub_request(request, "koina.wilhelmlab.org", "k.w.org")
-  request <- gsub_request(request, "dlomix.fgcz.uzh.ch", "d.f.u.ch")
-  request <- gsub_request(request, "Prosit_2019_intensity", "P_29_int")
-})
-
 # Create a client tied to a specific server & model
 # Here we use the model published by Gessulat et al [@prosit2019]
 # And the public server available at koina.wilhelmlab.org
