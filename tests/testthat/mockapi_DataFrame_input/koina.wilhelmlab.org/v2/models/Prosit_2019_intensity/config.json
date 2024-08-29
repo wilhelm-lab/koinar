@@ -117,9 +117,9 @@
                 "model_name": "Prosit_2019_intensity_core",
                 "model_version": 1,
                 "input_map": {
+                    "precursor_charge_in:0": "precursor_charges_in_preprocessed:0",
                     "collision_energy_in:0": "norm_collision_energy",
-                    "peptides_in:0": "peptides_in:0",
-                    "precursor_charge_in:0": "precursor_charges_in_preprocessed:0"
+                    "peptides_in:0": "peptides_in:0"
                 },
                 "output_map": {
                     "out/Reshape:0": "out/Reshape:0"
@@ -130,8 +130,8 @@
                 "model_name": "Prosit_2019_intensity_postprocess",
                 "model_version": 1,
                 "input_map": {
-                    "precursor_charges_in:0": "precursor_charges_in_preprocessed:0",
                     "peaks_in:0": "out/Reshape:0",
+                    "precursor_charges_in:0": "precursor_charges_in_preprocessed:0",
                     "peptides_in:0": "peptide_sequences"
                 },
                 "output_map": {

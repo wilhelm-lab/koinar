@@ -295,7 +295,7 @@ Koina <- setRefClass(
 
       # Prepare the POST json payload
       post_data <- list(
-        id = Sys.time(),
+        id = "",
         inputs = inputs
       )
 

@@ -58,6 +58,11 @@ Here we use the model Prosit_2019_intensity published by Gessulat et al [@prosit
 For a complete overview of models available on Koina have a look at the documentation available at https://koina.wilhelmlab.org/docs. 
 
 ```{r create, eval=TRUE, message=FALSE}
+# httptest is used to cached responses
+# This is important to compile the vignette in a CI pipeline
+# If you want to use this vignette interactively you can delete this line
+httptest::start_vignette("mockapi")  
+
 # Create a client tied to a specific server & model
 # Here we use the model published by Gessulat et al [@prosit2019]
 # And the public server available at koina.wilhelmlab.org

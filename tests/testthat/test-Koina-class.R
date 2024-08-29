@@ -64,6 +64,7 @@ with_mock_dir("mockapi_fig1", {
     )
   })
 })
+
 with_mock_dir("mockapi_server_unavailable", {
   test_that("Check error: Server unavailable", {
     expect_error(
@@ -211,6 +212,7 @@ with_mock_dir("mockapi_dataframe_output", {
     expect_equal(nrow(predictions), 19 * 1234)
   })
 })
+
 with_mock_dir("mockapi_predictWithKoinaModel", {
   test_that("predictWithKoinaModel", {
     prosit2019 <- koinar::Koina(
