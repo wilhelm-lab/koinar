@@ -1,0 +1,19 @@
+citHeader("To cite koinaR in publications, please use:")
+
+citEntry(
+  entry = "article",
+  title = "Koina: Democratizing machine learning for proteomics research",
+  author = c(
+    "Lautenbacher, Ludwig", "Yang, Kevin L.", "Kockmann, Tobias",
+    "Panse, Christian", "Chambers, Matthew", "Kahl, Elias",
+    "Yu, Fengchao", "Gabriel, Wassim", "Bold, Dulguun",
+    "Schmidt, Tobias", "Li, Kai", "MacLean, Brendan",
+    "Nesvizhskii, Alexey I.", "Wilhelm, Mathias"
+  ),
+  Journal = "bioRxiv",
+  year = "2024",
+  month = "jun",
+  url = "http://dx.doi.org/10.1101/2024.06.01.596953",
+  doi = "10.1101/2024.06.01.596953",
+  publisher = "Cold Spring Harbor Laboratory"
+)
