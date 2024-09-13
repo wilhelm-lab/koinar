@@ -26,7 +26,11 @@ Koina client class
 \section{Methods}{
 
 \describe{
-\item{\code{predict(input_data, pred_as_df = TRUE, min_intensity = 1e-05)}}{      Predict using the defined model.
+\item{\code{predict(
+  input_data,
+  pred_as_df = TRUE,
+  filters = list(intensities = c(1e-04, 1))
+)}}{      Predict using the defined model.
 
       Arguments:
 
@@ -34,7 +38,7 @@ Koina client class
 
       - pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
 
-      - min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
+      - filters: A list of vectors which is used to filter predictions. The key needs to equal the name of the predicted property, the first value is used as minimum the second as maximum. Ignored when `pred_as_df` == FALSE.
 
 
       Returns:
