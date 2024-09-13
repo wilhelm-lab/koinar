@@ -358,7 +358,7 @@ Koina <- setRefClass(
     },
     predict = function(input_data,
                        pred_as_df = TRUE,
-                       min_intensity = 1e-5) {
+                       filters = list("intensities" = c(1e-4, 1))) {
       "
       Predict using the defined model.
 
@@ -368,7 +368,7 @@ Koina <- setRefClass(
 
       - pred_as_df: Logical, indicating if the results should be returned as a dataframe (TRUE) or in the original format (FALSE).
 
-      - min_intensity: A threshold parameter, ignored unless `pred_as_df` is TRUE.
+      - filters: A list of vectors which is used to filter predictions. The key needs to equal the name of the predicted property, the first value is used as minimum the second as maximum. Ignored when `pred_as_df` == FALSE.
 
 
       Returns:
@@ -426,7 +426,7 @@ Koina <- setRefClass(
       results <- aggregate_batches(results)
 
       if (pred_as_df) {
-        return(format_predictions(results, input_df, min_intensity))
+        return(format_predictions(results, input_df, filters))
       } else {
         return(results)
       }
@@ -458,8 +458,7 @@ Koina <- setRefClass(
       names(aggregated_results) <- reference_names
       return(aggregated_results)
     },
-    format_predictions = function(predictions, input_df, min_intensity =
-                                    1e-4) {
+    format_predictions = function(predictions, input_df, filters = list("intensities" = c(1e-4, 1))) {
       # Use lapply to flatten each 2D array in the list to a 1D vector
       df <-
         data.frame(lapply(predictions, function(array) {
@@ -467,7 +466,12 @@ Koina <- setRefClass(
         }))
       df <-
         cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
-      df <- df[df$intensities > min_intensity, ]
+      
+      for(name in names(filters)){
+        if (!is.null(df[[name]])){
+          df <- df[(df[[name]] >= filters[[name]][1]) & (df[[name]] <= filters[[name]][2]), ]
+        }
+      }
       
       if(is(input_df, "DFrame")){
         df <- S4Vectors::DataFrame(df)

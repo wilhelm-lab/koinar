@@ -38,7 +38,7 @@ with_mock_dir("mAPI_fig1", {
     )
 
     prediction_results <-
-      koina_instance$predict(input, pred_as_df = FALSE, min_intensity = 0)
+      koina_instance$predict(input, pred_as_df = FALSE, filters = list("intensities" = c(0, 1)) )
 
     ## determine indices of top 10 highest intensities
     (prediction_results$intensities |> order(decreasing = TRUE))[seq(1, 10)] -> idx
@@ -46,7 +46,7 @@ with_mock_dir("mAPI_fig1", {
     testthat::expect_equal(idx, ground_truth)
 
     prediction_results_fgcz <-
-      koina_instance_fgcz$predict(input, pred_as_df = FALSE, min_intensity = 0)
+      koina_instance_fgcz$predict(input, pred_as_df = FALSE, filters = list("intensities" = c(0, 1)))
     ## determine indices of top 10 highest intensities
     (prediction_results_fgcz$intensities |> order(decreasing = TRUE))[seq(1, 10)] -> idx_fgcz
 
@@ -204,7 +204,7 @@ with_mock_dir("mAPI_df_output", {
     )
 
     df_input <- data.frame(input_data)
-    predictions <- koina_instance$predict(df_input, min_intensity = 0.1)
+    predictions <- koina_instance$predict(df_input, filters = list("intensities" = c(0.1, 1)))
 
     expect_equal(nrow(predictions), 19)
     expect_equal(class(predictions)[1], "data.frame")
@@ -231,7 +231,7 @@ with_mock_dir("mAPI_s4_df_output", {
     colnames(DataFrame_input) <- sapply(strsplit(colnames(DataFrame_input), ".", fixed = TRUE), function(x) {
       x[1]
     }) # Fix columnnames
-    predictions <- koina_instance$predict(DataFrame_input, min_intensity = 0.1)
+    predictions <- koina_instance$predict(DataFrame_input, filters = list("intensities" = c(0.1, 1)))
     
     expect_equal(nrow(predictions), 19)
     expect_equal(class(predictions)[1], "DFrame")
