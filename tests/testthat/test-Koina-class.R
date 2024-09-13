@@ -207,6 +207,34 @@ with_mock_dir("mAPI_df_output", {
     predictions <- koina_instance$predict(df_input, min_intensity = 0.1)
 
     expect_equal(nrow(predictions), 19)
+    expect_equal(class(predictions)[1], "data.frame")
+  })
+})
+
+with_mock_dir("mAPI_s4_df_output", {
+  test_that("Check S4 DF output", {
+    koina_instance <- koinar::Koina(
+      model_name = "Prosit_2019_intensity",
+      server_url = "koina.wilhelmlab.org",
+      ssl = TRUE
+    )
+    
+    input_data <- list(
+      peptide_sequences = array(c("LKEATIQLDELNQK"),
+                                dim = c(1, 1)
+      ),
+      collision_energies = array(c(25), dim = c(1, 1)),
+      precursor_charges = array(c(1), dim = c(1, 1))
+    )
+    
+    DataFrame_input <- S4Vectors::DataFrame(input_data)
+    colnames(DataFrame_input) <- sapply(strsplit(colnames(DataFrame_input), ".", fixed = TRUE), function(x) {
+      x[1]
+    }) # Fix columnnames
+    predictions <- koina_instance$predict(DataFrame_input, min_intensity = 0.1)
+    
+    expect_equal(nrow(predictions), 19)
+    expect_equal(class(predictions)[1], "DFrame")
   })
 })
 

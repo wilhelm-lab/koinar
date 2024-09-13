@@ -379,13 +379,17 @@ Koina <- setRefClass(
       # Check if input_data is a dataframe and convert to a list of 1d arrays if true
       if (is.data.frame(input_data) | is(input_data, "DFrame")) {
         # Converting each column of the dataframe into a separate 2d column array and store in a list
-        input_data <- lapply(input_data, function(column) {
+        input_df = input_data
+        input_list <- lapply(input_data, function(column) {
           # Convert to matrix with a single column (n x 1)
           array(column, dim = c(length(column), 1))
         })
+      } else {
+        input_list <- input_data
+        input_df = data.frame(input_data)
       }
 
-      total_samples <- dim(input_data[[1]])[1]
+      total_samples <- dim(input_list[[1]])[1]
       num_batches <- ceiling(total_samples / .self$batch_size)
 
       #  Initialize progress bar
@@ -400,7 +404,7 @@ Koina <- setRefClass(
         end_idx <- min(batch_number * .self$batch_size, total_samples)
 
         # Preparing batch_data
-        batch_data <- lapply(input_data, function(arr) {
+        batch_data <- lapply(input_list, function(arr) {
           # For arrays, slice while preserving dimensional integrity
           arr[start_idx:end_idx, , drop = FALSE]
         })
@@ -422,7 +426,7 @@ Koina <- setRefClass(
       results <- aggregate_batches(results)
 
       if (pred_as_df) {
-        return(format_predictions(results, data.frame(input_data), min_intensity))
+        return(format_predictions(results, input_df, min_intensity))
       } else {
         return(results)
       }
@@ -464,6 +468,10 @@ Koina <- setRefClass(
       df <-
         cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
       df <- df[df$intensities > min_intensity, ]
+      
+      if(is(input_df, "DFrame")){
+        df <- S4Vectors::DataFrame(df)
+      }
       return(df)
     }
   )
