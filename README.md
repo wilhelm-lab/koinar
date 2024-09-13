@@ -1,13 +1,13 @@
 # KoinaR
 
 ## Introduction
-Koina is a repository of machine learning models enabling the remote execution of models. Predictions are generated as a response to HTTP/S requests, the standard protocol used for nearly all web traffic. As such, HTTP/S requests can be easily generated in any programming language without requiring specialized hardware. This design enables users to easily access ML/DL models that would normally required specialized hardware from any device and in any programming language. It also means that the hardware is used more efficiently and it allows for easy horizontal scaling depending on the demand of the user base.
+Koina is a repository of machine learning models enabling the remote execution of models. Predictions are generated as a response to HTTP/S requests, the standard protocol used for nearly all web traffic. As such, HTTP/S requests can be easily generated in any programming language without requiring specialized hardware. This design enables users to easily access ML/DL models that would normally require specialized hardware from any device and in any programming language. It also means that the hardware is used more efficiently and it allows for easy horizontal scaling depending on the demand of the user base.
 
 To minimize the barrier of entry and “democratize” access to ML models, we provide a public network of Koina instances at koina.wilhelmlab.org. The computational workload is automatically distributed to processing nodes hosted at different research institutions and spin-offs across Europe. Each processing node provides computational resources to the service network, always aiming at just-in-time results delivery.
 
 In the spirit of open and collaborative science, we envision that this public Koina-Network can be scaled to meet the community’s needs by various research groups or institutions dedicating hardware. This can also vastly improve latency if servers are available geographically nearby. Alternatively, if data security is a concern, private instances within a local network can be easily deployed using the provided docker image.
 
-Koina is a community driven project. It is fuly open-source. We welcome all contributions and feedback! Feel free to reach out to us or open an issue on our GitHub repository.
+Koina is a community driven project. It is fully open-source. We welcome all contributions and feedback! Feel free to reach out to us or open an issue on our GitHub repository.
 
 At the moment Koina mostly focuses on the Proteomics domain but the design can be easily extended to any machine learning model. Active development to expand it into Metabolomics is underway. If you are interested in using Koina to interface with a machine learning model not currently available feel free to [create a request](https://github.com/wilhelm-lab/koina/issues).
 
