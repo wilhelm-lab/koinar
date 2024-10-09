@@ -23,7 +23,7 @@ Suggests:
   OrgMassSpecR,
   protViz,
   S4Vectors,
-  Spectrum,
+  Spectra,
   testthat
 Description: A client to simplify fetching predictions from the Koina web 
   service. Koina is a model repository enabling the remote execution of models. 
