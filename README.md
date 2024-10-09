@@ -54,14 +54,14 @@ docker run \
 ```
 
 ```R
-install.packages(c("roxygen2", "BiocManager", "httr", "jsonlite", "rmarkdown", "testthat", "pdflatex", "protViz", "OrgMassSpecR"))
-BiocManager::install(c('BiocStyle', 'BiocCheck', 'Spectra', 'msdata'))
+install.packages(c("roxygen2", "BiocManager", "httr", "jsonlite", "rmarkdown", "testthat", "pdflatex", "protViz", "OrgMassSpecR", "httptest"))
+BiocManager::install(c('BiocStyle', 'BiocCheck', 'Spectra', 'msdata', "mzR"))
 ```
 
 Dependencies to build vignette with Knit
 ```bash
 apt update
-apt-get install texlive-latex-base texlive-fonts-extra mono-runtime zlib1g-dev libnetcdf19
+apt-get install texlive-latex-base texlive-fonts-extra mono-runtime zlib1g-dev libnetcdf19 zlib1g-dev
 ```
 
 ### Build documentation
