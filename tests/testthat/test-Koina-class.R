@@ -257,3 +257,27 @@ with_mock_dir("mAPI_altPred", {
     expect_equal(p1, p2, 1e-6)
   })
 })
+
+with_mock_dir("mAPI_matrixpad", {
+  test_that("predictFlexMatrixBatch", {
+    model <- koinar::Koina(
+      model_name = "AlphaPeptDeep_ms2_generic",
+      server_url = "koina.wilhelmlab.org"
+    )
+    batch_size <- model$batch_size
+    
+    input <- data.frame(
+      peptide_sequences = c(rep("PEPTIDE", batch_size), rep("PEPTIDEPEPTIDE", batch_size)),
+      collision_energies = rep(25, 2 * batch_size),
+      precursor_charges = rep(2, 2 * batch_size),
+      instrument_types = rep("LUMOS", 2 * batch_size)
+    )
+    
+    data = model$predict(input, pred_as_df = FALSE)
+    
+    expect_equal(sum(is.na(data$annotation[1,])), 28)
+    expect_equal(sum(is.na(data$annotation[1001,])), 0)
+  })
+})
+
+
