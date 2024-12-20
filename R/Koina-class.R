@@ -73,6 +73,24 @@ predictWithKoinaModel <- function(koina_model, input) {
 #'
 #' # Fetch the predictions by calling `$predict` of the model you want to use
 #' prediction_results <- prosit2019$predict(input)
+rbind_pad <- function(matrices) {
+  # Get the maximum number of columns across all matrices
+  max_cols <- max(sapply(matrices, ncol))
+  
+  # Create a list of padded matrices
+  padded_matrices <- lapply(matrices, function(mat) {
+    # Create a matrix with NA of appropriate size
+    pad_mat <- matrix(NA, nrow = nrow(mat), ncol = max_cols)
+    # Fill in the current matrix
+    pad_mat[1:nrow(mat), 1:ncol(mat)] <- mat
+    return(pad_mat)
+  })
+  
+  # Combine padded matrices using rbind
+  return(do.call(rbind, padded_matrices))
+}
+
+
 Koina <- setRefClass(
   "Koina",
   fields = list(
@@ -445,12 +463,12 @@ Koina <- setRefClass(
         # Determine whether elements are vectors or matrices
         if (is.matrix(elements[[1]])) {
           # Use rbind to concatenate matrices along the first axis
-          do.call(rbind, elements)
+          return(rbind_pad(elements))
         } else {
           # For vectors, concatenate directly and preserve as a matrix for consistency
           concatenated_vector <- do.call(c, elements)
           # Convert to a column matrix, assuming vectors are considered as 1-column matrices
-          matrix(concatenated_vector, ncol = 1)
+          return(matrix(concatenated_vector, ncol = 1))
         }
       })
 
