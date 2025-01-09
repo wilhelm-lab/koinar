@@ -482,8 +482,11 @@ Koina <- setRefClass(
         data.frame(lapply(predictions, function(array) {
           as.vector(t(array))
         }))
-      df <-
-        cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
+      # Flatten the predictions if the second dimension is larger than 1
+      if(any(sapply(predictions, function(x) {dim(x)[2] > 1}))){
+        df <-
+          cbind(input_df[rep(seq_len(nrow(input_df)), each = dim(predictions$intensities)[2]), ], df)
+      }
       
       for(name in names(filters)){
         if (!is.null(df[[name]])){
