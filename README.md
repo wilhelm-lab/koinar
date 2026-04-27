@@ -55,7 +55,7 @@ docker run \
 
 ```R
 install.packages(c("roxygen2", "BiocManager", "httr", "jsonlite", "rmarkdown", "testthat", "pdflatex", "protViz", "OrgMassSpecR", "httptest"))
-BiocManager::install(c('BiocStyle', 'BiocCheck', 'Spectra', 'msdata', "mzR"))
+BiocManager::install(c('BiocStyle', 'BiocCheck'))
 ```
 
 Dependencies to build vignette with Knit
